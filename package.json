@@ -1,0 +1,39 @@
+{
+    "name": "use-image-preview",
+    "description": "Easy to use hook to preview selected image and upload it to server.",
+    "version": "1.0.0",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "react",
+        "image",
+        "preview",
+        "upload",
+        "file",
+        "hook"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
+    "peerDependencies": {
+        "react": ">=18"
+    },
+    "devDependencies": {
+        "@types/react": "^19.0.0",
+        "react": "^19.0.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.6.3"
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch"
+    }
+}
