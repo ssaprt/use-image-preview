@@ -1,15 +1,11 @@
 import { useCallback } from "react";
-import {
-    UseImagePreviewProps,
-    UseImagePreviewStates,
-} from "./useImagePreview.types";
+import { UseImagePreviewStates } from "./useImagePreview.types";
 
 export const useImagePreviewActions = (
-    props: UseImagePreviewProps,
     states: UseImagePreviewStates,
+    onImageSelect?: (file: File | null) => void,
 ) => {
     const { setPreview, setFile, objectUrlRef } = states;
-    const { onImageSelect } = props;
 
     const clear = useCallback(() => {
         if (objectUrlRef.current) {
@@ -50,5 +46,5 @@ export const useImagePreviewActions = (
         [onImageSelect, clear],
     );
 
-    return { change, clear };
+    return { change, clear, onImageSelect };
 };
