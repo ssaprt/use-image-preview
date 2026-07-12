@@ -1,9 +1,5 @@
 import { RefObject } from "react";
 
-export type UseImagePreviewProps = {
-    onImageSelect?: (file: File | null) => void;
-};
-
 export type UseImagePreviewStates = {
     preview: string | null;
     setPreview: React.Dispatch<React.SetStateAction<string | null>>;
