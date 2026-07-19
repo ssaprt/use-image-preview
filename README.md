@@ -1,8 +1,8 @@
 # use-image-preview
 
-React-хук для выбора файла изображения с автоматическим созданием превью (object URL) и корректной очисткой памяти.
+A React hook for selecting an image file, automatically creating a preview using an object URL, and properly cleaning it up to prevent memory leaks.
 
-## Установка
+## Installation
 
 ```bash
 npm install use-image-preview
@@ -12,11 +12,11 @@ npm install use-image-preview
 yarn add use-image-preview
 ```
 
-## Требования
+## Requirements
 
-- React >= 18
+* React >= 18
 
-## Использование
+## Usage
 
 ```tsx
 import { useImagePreview } from "use-image-preview";
@@ -24,7 +24,7 @@ import { useImagePreview } from "use-image-preview";
 function ImageUploader() {
     const { preview, file, change, clear } = useImagePreview({
         onImageSelect: (file) => {
-            console.log("Выбран файл:", file);
+            console.log("Selected file:", file);
         },
     });
 
@@ -34,8 +34,8 @@ function ImageUploader() {
 
             {preview && (
                 <>
-                    <img src={preview} alt="preview" width={200} />
-                    <button onClick={clear}>Убрать</button>
+                    <img src={preview} alt="Preview" width={200} />
+                    <button onClick={clear}>Remove</button>
                 </>
             )}
         </div>
@@ -47,60 +47,64 @@ function ImageUploader() {
 
 ### `useImagePreview(props?)`
 
-#### Параметры
+#### Parameters
 
-| Параметр        | Тип                            | Обязательный | Описание                                                                     |
-| --------------- | ------------------------------ | ------------ | ---------------------------------------------------------------------------- |
-| `onImageSelect` | `(file: File \| null) => void` | нет          | Вызывается при выборе нового файла или при очистке (тогда аргумент — `null`) |
+| Parameter       | Type                           | Required | Description                                                                                                   |
+| --------------- | ------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `onImageSelect` | `(file: File \| null) => void` | No       | Called when a new file is selected or when the current file is cleared. In that case, the argument is `null`. |
 
-#### Возвращаемое значение
+#### Return value
 
-| Поле      | Тип                                                          | Описание                                                                                                                                                     |
-| --------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `preview` | `string \| null`                                             | Object URL для превью выбранного изображения, либо `null`, если файл не выбран                                                                               |
-| `file`    | `File \| null`                                               | Выбранный файл со всеми его атрибутами, либо `null`                                                                                                          |
-| `change`  | `(e: ChangeEvent<HTMLInputElement> \| File \| null) => void` | Обработчик выбора файла. Можно передать напрямую в `onChange` инпута, вызвать с готовым `File` (например, при drag&drop) или с `null` (эквивалент `clear()`) |
-| `clear`   | `() => void`                                                 | Сбрасывает файл и превью, освобождает object URL, вызывает `onImageSelect(null)`                                                                             |
+| Property  | Type                                                         | Description                                                                                                                                                                                                     |
+| --------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `preview` | `string \| null`                                             | The object URL of the selected image preview, or `null` when no file is selected.                                                                                                                               |
+| `file`    | `File \| null`                                               | The selected file with all its properties, or `null`.                                                                                                                                                           |
+| `change`  | `(e: ChangeEvent<HTMLInputElement> \| File \| null) => void` | Handles file selection. It can be passed directly to an input's `onChange`, called with a `File` object, for example when using drag and drop, or called with `null`, which is equivalent to calling `clear()`. |
+| `clear`   | `() => void`                                                 | Clears the selected file and preview, revokes the object URL, and calls `onImageSelect(null)`.                                                                                                                  |
 
-## Работа с drag & drop
+## Drag and drop
 
-`change` принимает не только событие инпута, но и напрямую `File`:
+The `change` function accepts not only an input change event, but also a `File` object directly:
 
 ```tsx
 const { preview, change, clear } = useImagePreview();
 
 const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+
     const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile) change(droppedFile);
+
+    if (droppedFile) {
+        change(droppedFile);
+    }
 };
 
 return (
     <div onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
         {preview ? (
-            <img src={preview} alt="preview" />
+            <img src={preview} alt="Preview" />
         ) : (
-            "Перетащите изображение сюда"
+            "Drag an image here"
         )}
     </div>
 );
 ```
 
-## Управление памятью
+## Memory management
 
-Хук самостоятельно освобождает `object URL` через `URL.revokeObjectURL`:
+The hook automatically revokes object URLs using `URL.revokeObjectURL`:
 
-- при выборе нового файла (старый URL освобождается перед созданием нового);
-- при вызове `clear()`;
-- при размонтировании компонента.
+* when a new file is selected, the previous URL is revoked before a new one is created;
+* when `clear()` is called;
+* when the component is unmounted.
 
-Вручную ничего дополнительно чистить не нужно.
+No additional manual cleanup is required.
 
-## Особенности
+## Notes
 
-- Хук клиентский (использует `useState`/`useRef`) — при использовании в Next.js App Router компонент, где он вызывается, должен быть помечен `"use client"`.
-- Написан на TypeScript, типы поставляются вместе с пакетом.
+* This is a client-side hook because it uses `useState` and `useRef`. When using it with the Next.js App Router, the component that calls the hook must include the `"use client"` directive.
+* The package is written in TypeScript, and type definitions are included.
 
-## Лицензия
+## License
 
 MIT
