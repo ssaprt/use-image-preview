@@ -22,7 +22,9 @@ export type UseImagePreview = {
 export type UseImagePreviewStates = {
     preview: string | null;
     setPreview: Dispatch<SetStateAction<string | null>>;
+
     file: File | null;
     setFile: Dispatch<SetStateAction<File | null>>;
+
     objectUrlRef: RefObject<string | null>;
 };

@@ -1,8 +1,34 @@
-import { useCallback } from "react";
+import { useCallback, type ChangeEvent, type DragEvent } from "react";
+
 import type {
     ImagePreviewChangeSource,
     UseImagePreviewStates,
 } from "./useImagePreview.types";
+
+const isFile = (source: ImagePreviewChangeSource): source is File => {
+    return typeof File !== "undefined" && source instanceof File;
+};
+
+const isDragEvent = (
+    source: ImagePreviewChangeSource,
+): source is DragEvent<HTMLElement> => {
+    return (
+        source !== null &&
+        typeof source === "object" &&
+        "dataTransfer" in source
+    );
+};
+
+const isInputChangeEvent = (
+    source: ImagePreviewChangeSource,
+): source is ChangeEvent<HTMLInputElement> => {
+    return (
+        source !== null &&
+        typeof source === "object" &&
+        "currentTarget" in source &&
+        source.currentTarget instanceof HTMLInputElement
+    );
+};
 
 export const useImagePreviewActions = (
     states: UseImagePreviewStates,
@@ -18,6 +44,7 @@ export const useImagePreviewActions = (
 
         setPreview(null);
         setFile(null);
+
         onImageSelect?.(null);
     }, [objectUrlRef, onImageSelect, setFile, setPreview]);
 
@@ -30,17 +57,21 @@ export const useImagePreviewActions = (
                 return;
             }
 
-            if (typeof File !== "undefined" && source instanceof File) {
+            if (isFile(source)) {
                 selectedFile = source;
-            } else if ("dataTransfer" in source) {
+            } else if (isDragEvent(source)) {
                 source.preventDefault();
 
+                /*
+                 * На dragover только разрешаем drop.
+                 * Файл обрабатываем непосредственно при drop.
+                 */
                 if (source.type !== "drop") {
                     return;
                 }
 
                 selectedFile = source.dataTransfer.files.item(0);
-            } else {
+            } else if (isInputChangeEvent(source)) {
                 selectedFile = source.currentTarget.files?.item(0) ?? null;
             }
 
@@ -53,9 +84,12 @@ export const useImagePreviewActions = (
             }
 
             const objectUrl = URL.createObjectURL(selectedFile);
+
             objectUrlRef.current = objectUrl;
+
             setPreview(objectUrl);
             setFile(selectedFile);
+
             onImageSelect?.(selectedFile);
         },
         [clear, objectUrlRef, onImageSelect, setFile, setPreview],
