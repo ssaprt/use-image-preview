@@ -2,6 +2,7 @@ import { useCallback, type ChangeEvent, type DragEvent } from "react";
 
 import type {
     ImagePreviewChangeSource,
+    UseImagePreviewActions,
     UseImagePreviewStates,
 } from "./useImagePreview.types";
 
@@ -33,7 +34,7 @@ const isInputChangeEvent = (
 export const useImagePreviewActions = (
     states: UseImagePreviewStates,
     onImageSelect?: (file: File | null) => void,
-) => {
+): UseImagePreviewActions => {
     const { setPreview, setFile, objectUrlRef } = states;
 
     const clear = useCallback(() => {
@@ -41,10 +42,8 @@ export const useImagePreviewActions = (
             URL.revokeObjectURL(objectUrlRef.current);
             objectUrlRef.current = null;
         }
-
         setPreview(null);
         setFile(null);
-
         onImageSelect?.(null);
     }, [objectUrlRef, onImageSelect, setFile, setPreview]);
 
@@ -62,10 +61,6 @@ export const useImagePreviewActions = (
             } else if (isDragEvent(source)) {
                 source.preventDefault();
 
-                /*
-                 * На dragover только разрешаем drop.
-                 * Файл обрабатываем непосредственно при drop.
-                 */
                 if (source.type !== "drop") {
                     return;
                 }
@@ -84,12 +79,9 @@ export const useImagePreviewActions = (
             }
 
             const objectUrl = URL.createObjectURL(selectedFile);
-
             objectUrlRef.current = objectUrl;
-
             setPreview(objectUrl);
             setFile(selectedFile);
-
             onImageSelect?.(selectedFile);
         },
         [clear, objectUrlRef, onImageSelect, setFile, setPreview],
