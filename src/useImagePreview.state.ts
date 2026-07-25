@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { UseImagePreviewStates } from "./useImagePreview.types";
+import type { UseImagePreviewStates } from "./useImagePreview.types";
 
 export const useImagePreviewStates = (): UseImagePreviewStates => {
     const [preview, setPreview] = useState<string | null>(null);

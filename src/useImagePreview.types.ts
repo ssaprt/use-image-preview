@@ -1,17 +1,28 @@
-import { RefObject } from "react";
+import type {
+    ChangeEvent,
+    Dispatch,
+    DragEvent,
+    RefObject,
+    SetStateAction,
+} from "react";
 
-export type UseImagePreviewStates = {
+export type ImagePreviewChangeSource =
+    | ChangeEvent<HTMLInputElement>
+    | DragEvent<HTMLElement>
+    | File
+    | null;
+
+export type UseImagePreview = {
     preview: string | null;
-    setPreview: React.Dispatch<React.SetStateAction<string | null>>;
     file: File | null;
-    setFile: React.Dispatch<React.SetStateAction<File | null>>;
-    objectUrlRef: RefObject<string | null>;
-};
-
-export type UseImagePreviewActions = {
-    change: (e: React.ChangeEvent<HTMLInputElement> | File | null) => void;
+    change: (source: ImagePreviewChangeSource) => void;
     clear: () => void;
 };
 
-export type UseImagePreview = Pick<UseImagePreviewStates, "preview" | "file"> &
-    UseImagePreviewActions;
+export type UseImagePreviewStates = {
+    preview: string | null;
+    setPreview: Dispatch<SetStateAction<string | null>>;
+    file: File | null;
+    setFile: Dispatch<SetStateAction<File | null>>;
+    objectUrlRef: RefObject<string | null>;
+};
