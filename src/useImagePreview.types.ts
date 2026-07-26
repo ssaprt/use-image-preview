@@ -1,5 +1,7 @@
 import type { ChangeEvent, Dispatch, DragEvent, SetStateAction } from "react";
 
+export type PreviewFileType = "image" | "video";
+
 export type ImagePreviewChangeSource =
     | ChangeEvent<HTMLInputElement>
     | DragEvent<HTMLElement>
@@ -18,6 +20,7 @@ export type UseImagePreviewActions = {
 export type UseImagePreview = {
     preview: string | null;
     file: File | null;
+    type: PreviewFileType | null;
 } & UseImagePreviewActions;
 
 export type UseImagePreviewStates = {
@@ -26,6 +29,9 @@ export type UseImagePreviewStates = {
 
     file: File | null;
     setFile: Dispatch<SetStateAction<File | null>>;
+
+    type: PreviewFileType | null;
+    setType: Dispatch<SetStateAction<PreviewFileType | null>>;
 
     objectUrlRef: {
         current: string | null;

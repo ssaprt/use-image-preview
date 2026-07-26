@@ -1,7 +1,7 @@
 import { useCallback, type ChangeEvent, type DragEvent } from "react";
-
 import type {
     ImagePreviewChangeSource,
+    PreviewFileType,
     UseImagePreviewActions,
     UseImagePreviewStates,
 } from "./useImagePreview.types";
@@ -27,25 +27,41 @@ const isInputChangeEvent = (
         source !== null &&
         typeof source === "object" &&
         "currentTarget" in source &&
+        typeof HTMLInputElement !== "undefined" &&
         source.currentTarget instanceof HTMLInputElement
     );
+};
+
+const getFileType = (file: File): PreviewFileType | null => {
+    if (file.type.startsWith("image/")) {
+        return "image";
+    }
+
+    if (file.type.startsWith("video/")) {
+        return "video";
+    }
+
+    return null;
 };
 
 export const useImagePreviewActions = (
     states: UseImagePreviewStates,
     onImageSelect?: (file: File | null) => void,
 ): UseImagePreviewActions => {
-    const { setPreview, setFile, objectUrlRef } = states;
+    const { setPreview, setFile, setType, objectUrlRef } = states;
 
     const clear = useCallback(() => {
         if (objectUrlRef.current) {
             URL.revokeObjectURL(objectUrlRef.current);
             objectUrlRef.current = null;
         }
+
         setPreview(null);
         setFile(null);
+        setType(null);
+
         onImageSelect?.(null);
-    }, [objectUrlRef, onImageSelect, setFile, setPreview]);
+    }, [objectUrlRef, onImageSelect, setFile, setPreview, setType]);
 
     const change = useCallback(
         (source: ImagePreviewChangeSource) => {
@@ -74,17 +90,27 @@ export const useImagePreviewActions = (
                 return;
             }
 
+            const selectedFileType = getFileType(selectedFile);
+
+            if (!selectedFileType) {
+                return;
+            }
+
             if (objectUrlRef.current) {
                 URL.revokeObjectURL(objectUrlRef.current);
             }
 
             const objectUrl = URL.createObjectURL(selectedFile);
+
             objectUrlRef.current = objectUrl;
+
             setPreview(objectUrl);
             setFile(selectedFile);
+            setType(selectedFileType);
+
             onImageSelect?.(selectedFile);
         },
-        [clear, objectUrlRef, onImageSelect, setFile, setPreview],
+        [clear, objectUrlRef, onImageSelect, setFile, setPreview, setType],
     );
 
     return {

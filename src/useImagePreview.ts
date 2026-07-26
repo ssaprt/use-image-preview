@@ -1,5 +1,6 @@
 import { useImagePreviewActions } from "./useImagePreview.actions";
 import { useImagePreviewStates } from "./useImagePreview.state";
+
 import type {
     UseImagePreview,
     UseImagePreviewProps,
@@ -9,12 +10,14 @@ export const useImagePreview = ({
     onImageSelect,
 }: UseImagePreviewProps = {}): UseImagePreview => {
     const states = useImagePreviewStates();
-    const actions = useImagePreviewActions(states, onImageSelect);
+
+    const { change, clear } = useImagePreviewActions(states, onImageSelect);
 
     return {
         preview: states.preview,
         file: states.file,
-        change: actions.change,
-        clear: actions.clear,
+        type: states.type,
+        change,
+        clear,
     };
 };

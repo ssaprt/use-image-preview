@@ -22,9 +22,10 @@ yarn add use-image-preview
 import { useImagePreview } from "use-image-preview";
 
 function ImageUploader() {
-    const { preview, file, change, clear } = useImagePreview({
+    const { preview, file, change, clear, type } = useImagePreview({
         onImageSelect: (file) => {
             console.log("Selected file:", file);
+            console.log("Selected file type", type)
         },
     });
 
@@ -61,6 +62,7 @@ function ImageUploader() {
 | `file`    | `File \| null`                                               | The selected file with all its properties, or `null`.                                                                                                                                                           |
 | `change`  | `(e: ChangeEvent<HTMLInputElement> \| File \| null) => void` | Handles file selection. It can be passed directly to an input's `onChange`, called with a `File` object, for example when using drag and drop, or called with `null`, which is equivalent to calling `clear()`. |
 | `clear`   | `() => void`                                                 | Clears the selected file and preview, revokes the object URL, and calls `onImageSelect(null)`.                                                                                                                  |
+| `type` | `video \| image` | No       | Return type select media`. |
 
 ## Drag and drop
 
@@ -69,21 +71,14 @@ The `change` function accepts not only an input change event, but also a `File` 
 ```tsx
 const { preview, change, clear } = useImagePreview();
 
-const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
 
-    const droppedFile = e.dataTransfer.files?.[0];
-
-    if (droppedFile) {
-        change(droppedFile);
-    }
-};
 
 return (
-    <div onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
-        {preview ? (
-            <img src={preview} alt="Preview" />
-        ) : (
+    <div onDrop={change} onDragOver={change}>
+        {preview ? 
+            type === "video" ? <video src={preview}> 
+            : <img src={preview} alt="Preview" /> 
+        : (
             "Drag an image here"
         )}
     </div>
