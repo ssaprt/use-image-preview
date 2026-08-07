@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2026-08-07
+
+### Fixed some bugs
+
+- Fixed some bugs.
+
+## [1.0.4] - 2026-08-07
+
+### Added changelog
+
+- Added changelog file.
+
 ## [1.0.3] - 2026-07-26
 
 ### Added type
