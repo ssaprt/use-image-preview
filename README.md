@@ -1,5 +1,7 @@
 # use-image-preview
 
+Web version: <a href="https://utility-lub.vercel.app/react/hooks/media/useImagePreview/">useImagePreview</a>
+
 A React hook for selecting an image file, automatically creating a preview using an object URL, and properly cleaning it up to prevent memory leaks.
 
 ## Installation

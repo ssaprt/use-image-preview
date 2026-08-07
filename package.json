@@ -1,7 +1,7 @@
 {
     "name": "use-image-preview",
     "description": "Easy to use hook to preview selected image and upload it to server.",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
